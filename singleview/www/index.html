@@ -36,13 +36,25 @@
         </ion-item>
         <ion-item ng-repeat="msg in messages">
 
-        {{msg}}
+        {{msg.contents}}
         </ion-item>
 
 
         </ion-list>
       </ion-content>
-      <ion-footer-bar>
+      <ion-footer-bar class="bar-stableS">
+        <form ng-submit="sendMessage(messageText)" ng-controller="ChatController" class="message_entry">
+          <div class="list">
+            <label class="item item-input">
+              <input type="text" placeholder="Send a message" ng-model="messageText" autofocus="true">
+            </input>
+            <button class="button button-small">
+              Send
+            </button>
+
+            </label>
+          </div>
+        </form>
 
       </ion-footer-bar>
     </ion-pane>
