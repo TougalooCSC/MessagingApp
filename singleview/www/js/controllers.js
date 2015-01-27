@@ -10,6 +10,15 @@ angular.module('starter.controllers', [])
   	$scope.currUser = Users.get(2);
   	$scope.currConversation = Chats.getConversation(2);
   	$scope.messages = $scope.currConversation.messages;
+  	$scope.messages.forEach(function(element) { 
+  	                               if (element.from === $scope.currUser.id) { 
+  	                                 element['fromUser'] = true;
+  	                               }else {
+  	                                 element['fromUser'] = false;
+  	                               }
+  	                               element['avatar'] = $scope.imgUrls[element.from];
+  	                            });
+
   	$scope.messageText = "";
   	$scope.sendMessage = function(msg){
   	     // $scope.messages.push({from:$scope.currUser.id, contents: msg, fromUser: true, avatar: $scope.currUser.image});

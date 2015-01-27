@@ -34,11 +34,13 @@
         <ion-item>
         Red
         </ion-item>
-        <ion-item ng-repeat="msg in messages">
-
-        {{msg.contents}}
-        </ion-item>
-
+    
+           <ion-item ng-repeat="msg in messages">
+                      <div ng-class="{'item-thumbnail-left': msg.fromUser, 'item-thumbnail-right': !msg.fromUser, 'sender_msg': msg.fromUser, 'receiver_msg': !msg.fromUser}"> 
+                        <img ng-src="{{msg.avatar}}"> 
+                        {{msg.contents}} 
+                      </div>
+                    </ion-item>
 
         </ion-list>
       </ion-content>
