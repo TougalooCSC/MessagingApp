@@ -21,8 +21,38 @@ angular.module('starter.controllers', [])
   $scope.friend = Friends.get($stateParams.friendId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope, $firebaseAuth) {
   $scope.settings = {
-    enableFriends: true
+    enableFriends: true, 
+    loggedIn: false
   };
+
+  var ref = new Firebase ("https://glaring-torch-9527.firebaseio.com");
+  $scope.authObj = $firebaseAuth(ref);
+  $scope.authObj.$onAuth(function(authData){
+      if (authData) {
+        console.log("logged in as:", authData.uid);
+        $scope.settings.loggedIn = true;
+       } else {
+        console.log("Logged out");
+        $scope.settings.loggedIn = false;
+       }
+  });
+
+
+
+
+  $scope.logon = function (){
+    $scope.authObj.$authWithOAuthPopup("facebook").then(function(authData){
+      console.log("Logged in as:", authData.uid);
+    }).catch(function(error){
+      console.error("Authentication failed:", error);
+    });
+
+  };
+  $scope.logoff = function (){
+    $scope.authObj.$unauth();
+
+   };
+
 });
