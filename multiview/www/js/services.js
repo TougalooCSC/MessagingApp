@@ -95,3 +95,4 @@ angular.module('starter.services', [])
     }
   }
 });
+          throw "Entry must have attr: key!"
