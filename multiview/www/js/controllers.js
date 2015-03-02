@@ -6,32 +6,74 @@ angular.module('starter.controllers', [])
   $scope.chats = Chats.all();
   $scope.remove = function(chat) {
     Chats.remove(chat);
-  }
+  };
 })
 
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('FriendsCtrl', function($scope, Friends) {
+.controller('FriendsCtrl', function($scope, $ionicPopover, Friends) {
   $scope.friends = Friends.all();
+
+  $ionicPopover.fromTemplateUrl('templates/addContactPopover.html', {scope: $scope})
+    .then(function(popover) {
+      $scope.popover = popover;
+    });
+  $scope.openAddContactPopover = function($event){
+    $scope.popover.show($event);
+  };
+  $scope.closeAddContactPopover = function () {
+    $scope.popover.hide();
+  };
+  $scope.$on('$destroy', function(){
+    $scope.popover.remove();
+  });
+  $scope.addContact = function() {
+
+  };
+  $scope.findContact = function (searchFields) {
+    var friendResult;
+    if (searchFields.hasOwnProperty('email')) {
+      friendResult = Friends.findByEmail();
+    }
+  };
 })
 
 .controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {
   $scope.friend = Friends.get($stateParams.friendId);
 })
 
-.controller('AccountCtrl', function($scope, $firebaseAuth) {
+.controller('AccountCtrl', function($scope, $firebase, $firebaseAuth, Users, Directory) {
   $scope.settings = {
-    enableFriends: true, 
+    enableFriends: true,
     loggedIn: false
   };
 
-  var ref = new Firebase ("https://glaring-torch-9527.firebaseio.com");
+  $scope.userData = null;
+  $scope.email = "ccapri90@yahoo.com";
+  $scope.password = "asdf1234";
+  $scope.directory = Directory.all();
+
+  var ref = new Firebase ("https://corntoole.firebaseio.com");
   $scope.authObj = $firebaseAuth(ref);
   $scope.authObj.$onAuth(function(authData){
       if (authData) {
         console.log("logged in as:", authData.uid);
+        // console.log(userData);
+        // if (userData === null) {
+        //   Users.add(authData);
+        // }
+        Users.add(authData);
+
+        var userRecord = $firebase(ref.child('users').child(authData.uid)).$asObject();
+        userRecord.$loaded().then(function() {
+          console.log("record: ", userRecord.$id);
+          Directory.add({'key': userRecord.displayName, 'uid': userRecord.uid})//TODO:fix hack
+        });
+        $scope.userData = userRecord;
+
+
         $scope.settings.loggedIn = true;
        } else {
         console.log("Logged out");
@@ -39,16 +81,31 @@ angular.module('starter.controllers', [])
        }
   });
 
+  $scope.logon = function (provider){
 
+    if (provider == "facebook") {
+      $scope.authObj.$authWithOAuthPopup("facebook").then(function(authData){
+        console.log("Logged in as:", authData.uid);
+      }).catch(function(error){
+        console.error("Authentication failed:", error);
+      });
+    } else if (provider == "password") {
+      $scope.loginWithPassword();
+    }
 
-
-  $scope.logon = function (){
-    $scope.authObj.$authWithOAuthPopup("facebook").then(function(authData){
-      console.log("Logged in as:", authData.uid);
-    }).catch(function(error){
-      console.error("Authentication failed:", error);
-    });
-
+  };
+  $scope.loginWithPassword = function() {
+    $scope.authObj.$authWithPassword({
+      "email": $scope.email,
+      "password": $scope.password
+      }, function(error, authData){
+        if (authData) {
+          console.log("logged in as:", authData.uid);
+        } else {
+          console.log("Login failed!", error);
+        }
+      }
+    );
   };
   $scope.logoff = function (){
     $scope.authObj.$unauth();
