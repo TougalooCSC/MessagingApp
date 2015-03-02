@@ -11,10 +11,14 @@
         </label>
       </ion-item>
       <ion-item ng-hide="settings.loggedIn">
-        <button class= "button" ng-click="logon()">Login</button>
+        <button class= "button" ng-click="logon('facebook')">Log in With Facebook</button>
+        <button class= "button" ng-click="logon('password')">Log in With Password</button>
       </ion-item>
       <ion-item ng-show="settings.loggedIn" ng-click="logoff()">
       <button class="button">Logout</button>
+    </ion-item>
+    <ion-item ng-repeat="entry in directory">
+      {{entry.uid}}
     </ion-item>
     </ion-list>
   </ion-content>
