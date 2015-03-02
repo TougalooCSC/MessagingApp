@@ -1,0 +1,24 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+  "users": {
+    "$userId": {
+       ".write": "(auth != null) && (auth.uid === $userId )",
+       ".read": "(auth != null) && (auth.uid === $userId )",
+       ".validate": "($userId === newData.child('uid').val())"
+    }
+  },
+  "threads": {
+    "$threadId": {
+      "write": "(auth != null) && (data.val() === null) && (root.child('thread-metadata').child('participants').hasChild(auth.uid))",
+      "read": "(auth != null) && (data.val() === null) && (root.child('thread-metadata').child('participants').hasChild(auth.uid))"
+    }
+  },
+  "directory": {
+    ".write": "(auth != null)",
+    ".read": true,
+    ".validate": "($userId === newData.child('uid').val())"
+  }
+  }
+}
