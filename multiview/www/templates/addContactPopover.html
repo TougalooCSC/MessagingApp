@@ -1,8 +1,9 @@
 <ion-popover-view>
-	<ion-header-bar>
-	  <h1 class="title">My Popover Title</h1>
-	</ion-header-bar>
 	<ion-content>
-	  
+	<ion-list>
+		<ion-item ng-repeat="entry in directory" ng-click="addContact(entry)">
+			{{ entry.displayName }}
+		</ion-item>
+	</ion-list>
 	</ion-content>
 </ion-popover-view>

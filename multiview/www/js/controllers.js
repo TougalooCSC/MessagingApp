@@ -13,8 +13,9 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('FriendsCtrl', function($scope, $ionicPopover, Friends) {
+.controller('FriendsCtrl', function($scope, $ionicPopover, Friends, Directory) {
   $scope.friends = Friends.all();
+	$scope.directory = Directory.all();
 
   $ionicPopover.fromTemplateUrl('templates/addContactPopover.html', {scope: $scope})
     .then(function(popover) {
@@ -29,8 +30,8 @@ angular.module('starter.controllers', [])
   $scope.$on('$destroy', function(){
     $scope.popover.remove();
   });
-  $scope.addContact = function() {
-
+  $scope.addContact = function(contact) {
+		Friends.add(contact);		
   };
   $scope.findContact = function (searchFields) {
     var friendResult;
