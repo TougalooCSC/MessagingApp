@@ -134,7 +134,7 @@ angular.module('starter.services', [])
   /**
    * A simple example service that returns some data.
    */
-  .factory('Friends', function(Users) {
+  .factory('Friends', function(Users, $firebase, $firebaseAuth) {
     // Might use a resource here that returns a JSON array
 
     // Some fake testing data
@@ -146,7 +146,18 @@ angular.module('starter.services', [])
     //   face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
     // },
     var friends = [];
+		var ref = new Firebase("https://corntoole.firebaseio.com");
+		var authObj = $firebaseAuth(ref);
+		var authData = authObj.$getAuth();
+		
+		var friendsSync = $firebase(ref.child('users').child(authData.uid).child('contacts'));
 
+		friends = friendsSync.$asArray();
+		friends.$loaded().then(function(){
+			console.log("loaded: " + friends.length+ " friends loaded ");
+		});
+
+		
     return {
       all: function() {
         return friends;
@@ -154,7 +165,14 @@ angular.module('starter.services', [])
       get: function(friendId) {
         // Simple index lookup
         return friends[friendId];
-      }
+      },
+			add: function(friend) {
+				friendsSync.$push({
+					displayName: friend.displayName,
+					uid: friend.uid//,
+					//imgUrl: friend.imgUrl
+				});
+			}
     };
   })
   .factory('Directory', function($firebase){
@@ -170,13 +188,17 @@ angular.module('starter.services', [])
         return directorySync[key];
       },
       add: function(entry) {
-        if (!entry.hasOwnProperty('key')) {
-          throw "Entry must have attr: key!"
+        if (!entry.hasOwnProperty('displayName')) {
+          throw "Entry must have attr: displayName!"
         }
         if (!entry.hasOwnProperty('uid')) {
           throw "Entry must have attr: uid!"
         }
-        _directory.$set(entry.key, {displayName: entry.key, uid: entry.uid})
+        _directory.$set(entry.displayName, {
+					displayName: entry.displayName,
+					uid: entry.uid,
+					imgUrl: entry.imgUrl
+				})
           .then(function(ref){ //TODO: factor this promise out
             console.log(ref.key());
           }, function(error) {
