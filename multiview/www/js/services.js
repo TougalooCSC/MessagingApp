@@ -9,19 +9,19 @@ var getName = function (authData) {
     }
 };
 angular.module('starter.services', [])
-.factory('Directory', function($firebase){
+.factory('Directory', function($firebaseObject, $firebaseArray){
  var url = "https://glaring-torch-9527.firebaseio.com";
   var ref = new Firebase(url);
-  var _directory = $firebase(ref);
-  var directorySync = $firebase(ref). $asObject();
-  var directoryAsArray = $firebase(ref).$asArray();
+  var _directoryRef = ref.child('directory');
+  var directorySync = $firebaseObject(ref);
+  var directoryAsArray = $firebaseArray(ref);
 
   return {
     all: function(){
       return directoryAsArray;
     },
     get: function(key){
-      return directorySync[key];
+      return directoryAsArray.$getRecord(key);
     },
     add: function(entry){
       if (!entry.hasOwnProperty('displayName')){
@@ -30,35 +30,30 @@ angular.module('starter.services', [])
       if (!entry.hasOwnProperty('uid')){
         throw "Entry must have attr: uid!"
       }
-      _directory.$set(entry.displayName, {displayName: entry.displayName, uid:entry.uid})
-        .then(function(ref){
-          console.log(ref.key());
-          }, function(error) {
-            console.log("Error:", error);
-          });
+      _directoryRef.child(entry.displayName).set({displayName: entry.displayName, uid:entry.uid});
     }
   };
 })
-.factory('Users', function($firebase, $firebaseAuth){
+.factory('Users', function($firebaseObject, $firebaseAuth){
   var url = "https://glaring-torch-9527.firebaseio.com";
   var ref = new Firebase(url);
-  var usersSync = $firebase(ref.child("users"));
+  var usersRef = ref.child("users");
   // var authObject = $firebaseAuth(ref);
   // var authData = authObject.$getAuth();
   // if (authData) {
-  //   usersSync = $firebase(ref.child(authData.uid));
+  //   usersRef = $firebase(ref.child(authData.uid));
   // }
   
   return {
     add: function(authData) {
-      usersSync.$set(authData.uid, {
+      usersRef.child(authData.uid).set({
         uid: authData.uid,
         displayName: getName(authData),
         contacts: []
       })
     },
     get: function(uid){
-      return $firebase(ref.child("users").child(uid)).$asObject();
+      return $firebaseObject(ref.child("users").child(uid));
     } 
   }
   // var userData = 
