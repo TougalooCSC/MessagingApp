@@ -1,5 +1,68 @@
+var getName = function (authData) {
+    switch(authData.provider) {
+       case 'password':
+         return authData.password.email.replace(/@.*/, '');
+       case 'twitter':
+         return authData.twitter.displayName;
+       case 'facebook':
+         return authData.facebook.displayName;
+    }
+};
 angular.module('starter.services', [])
+.factory('Directory', function($firebase){
+ var url = "https://glaring-torch-9527.firebaseio.com";
+  var ref = new Firebase(url);
+  var _directory = $firebase(ref);
+  var directorySync = $firebase(ref). $asObject();
+  var directoryAsArray = $firebase(ref).$asArray();
 
+  return {
+    all: function(){
+      return directoryAsArray;
+    },
+    get: function(key){
+      return directorySync[key];
+    },
+    add: function(entry){
+      if (!entry.hasOwnProperty('displayName')){
+        throw "Entry must have attr: displayName"
+      }
+      if (!entry.hasOwnProperty('uid')){
+        throw "Entry must have attr: uid!"
+      }
+      _directory.$set(entry.displayName, {displayName: entry.displayName, uid:entry.uid})
+        .then(function(ref){
+          console.log(ref.key());
+          }, function(error) {
+            console.log("Error:", error);
+          });
+    }
+  };
+})
+.factory('Users', function($firebase, $firebaseAuth){
+  var url = "https://glaring-torch-9527.firebaseio.com";
+  var ref = new Firebase(url);
+  var usersSync = $firebase(ref.child("users"));
+  // var authObject = $firebaseAuth(ref);
+  // var authData = authObject.$getAuth();
+  // if (authData) {
+  //   usersSync = $firebase(ref.child(authData.uid));
+  // }
+  
+  return {
+    add: function(authData) {
+      usersSync.$set(authData.uid, {
+        uid: authData.uid,
+        displayName: getName(authData),
+        contacts: []
+      })
+    },
+    get: function(uid){
+      return $firebase(ref.child("users").child(uid)).$asObject();
+    } 
+  }
+  // var userData = 
+})
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 

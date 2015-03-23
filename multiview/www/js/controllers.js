@@ -21,11 +21,12 @@ angular.module('starter.controllers', [])
   $scope.friend = Friends.get($stateParams.friendId);
 })
 
-.controller('AccountCtrl', function($scope, $firebaseAuth) {
+.controller('AccountCtrl', function($scope, $firebaseAuth, Users) {
   $scope.settings = {
     enableFriends: true, 
     loggedIn: false
   };
+  $scope.users = Users;
 
   var ref = new Firebase ("https://glaring-torch-9527.firebaseio.com");
   $scope.authObj = $firebaseAuth(ref);
@@ -33,6 +34,7 @@ angular.module('starter.controllers', [])
       if (authData) {
         console.log("logged in as:", authData.uid);
         $scope.settings.loggedIn = true;
+        $scope.users.add(authData);
        } else {
         console.log("Logged out");
         $scope.settings.loggedIn = false;
