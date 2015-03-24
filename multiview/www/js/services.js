@@ -58,6 +58,38 @@ angular.module('starter.services', [])
   }
   // var userData = 
 })
+.factory('friends',function($firebaseObject, $firebaseAuth){
+  var url = "https://glaring-torch-9527.firebaseio.com";
+  var ref = new Firebase(url);
+  var _friendsRef = ref.child('users').child(authData.uid).child('contacts');
+  var friendsSync = $firebaseObject(ref);
+  var friends = $firebaseArray(ref);
+
+  return{
+    all: function(){
+     return friends;
+
+    },
+    get: function(uid){
+      var result = null;
+      friends.forEach(function(element){
+        if (uid == element.uid){
+          result = element;
+          return;
+        }
+
+      });
+      return result;
+    },
+    add: function(friend){
+      _friendsRef.child(friend.displayName).set({
+        displayName: friend.displayName, 
+        uid: friend.uid
+      })
+    }
+
+  };
+ })
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
@@ -110,46 +142,65 @@ angular.module('starter.services', [])
 /**
  * A simple example service that returns some data.
  */
-.factory('Friends', function() {
+.factory('Friends', function($firebaseObject, $firebaseAuth, $firebaseArray) {
   // Might use a resource here that returns a JSON array
 
-  // Some fake testing data
-  // Some fake testing data
-  var friends = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    notes: 'Enjoys drawing things',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    notes: 'Odd obsession with everything',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  }, {
-    id: 2,
-    name: 'Andrew Jostlen',
-    notes: 'Wears a sweet leather Jacket. I\'m a bit jealous',
-    face: 'https://pbs.twimg.com/profile_images/491274378181488640/Tti0fFVJ.jpeg'
-  }, {
-    id: 3,
-    name: 'Adam Bradleyson',
-    notes: 'I think he needs to buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 4,
-    name: 'Perry Governor',
-    notes: 'Just the nicest guy',
-    face: 'https://pbs.twimg.com/profile_images/491995398135767040/ie2Z_V6e.jpeg'
-  }];
+  var url = "https://glaring-torch-9527.firebaseio.com";
+  var ref = new Firebase(url);
+  var authData = $firebaseAuth(ref).$getAuth();
+  var _friendsRef = ref.child('users').child(authData.uid).child('contacts');
+  var friendsSync = $firebaseObject(ref);
+  var friends = $firebaseArray(ref);
 
+  return{
+    all: function(){
+     return friends;
 
-  return {
-    all: function() {
-      return friends;
     },
-    get: function(friendId) {
-      // Simple index lookup
-      return friends[friendId];
+    get: function(uid){
+      var result = null;
+      friends.forEach(function(element){
+        if (uid == element.uid){
+          result = element;
+          return;
+        }
+
+      });
+      return result;
+    },
+    add: function(friend){
+      _friendsRef.child(friend.displayName).set({
+        displayName: friend.displayName, 
+        uid: friend.uid
+      })
     }
-  }
+
+  };
+  // [{
+  //   id: 0,
+  //   name: 'Ben Sparrow',
+  //   notes: 'Enjoys drawing things',
+  //   face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
+  // }, {
+  //   id: 1,
+  //   name: 'Max Lynx',
+  //   notes: 'Odd obsession with everything',
+  //   face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
+  // }, {
+  //   id: 2,
+  //   name: 'Andrew Jostlen',
+  //   notes: 'Wears a sweet leather Jacket. I\'m a bit jealous',
+  //   face: 'https://pbs.twimg.com/profile_images/491274378181488640/Tti0fFVJ.jpeg'
+  // }, {
+  //   id: 3,
+  //   name: 'Adam Bradleyson',
+  //   notes: 'I think he needs to buy a boat',
+  //   face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
+  // }, {
+  //   id: 4,
+  //   name: 'Perry Governor',
+  //   notes: 'Just the nicest guy',
+  //   face: 'https://pbs.twimg.com/profile_images/491995398135767040/ie2Z_V6e.jpeg'
+  // }];
+
 });
