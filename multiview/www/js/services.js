@@ -13,8 +13,14 @@ angular.module('starter.services', [])
  var url = "https://glaring-torch-9527.firebaseio.com";
   var ref = new Firebase(url);
   var _directoryRef = ref.child('directory');
-  var directorySync = $firebaseObject(ref);
-  var directoryAsArray = $firebaseArray(ref);
+  var directorySync = $firebaseObject(_directoryRef);
+  var directoryAsArray = $firebaseArray(_directoryRef);
+  directoryAsArray.$loaded().then(function(a){
+      console.log(a);
+    })
+    .catch(function(error){
+      console.log("Error: ", error);
+    });
 
   return {
     all: function(){
@@ -58,38 +64,38 @@ angular.module('starter.services', [])
   }
   // var userData = 
 })
-.factory('friends',function($firebaseObject, $firebaseAuth){
-  var url = "https://glaring-torch-9527.firebaseio.com";
-  var ref = new Firebase(url);
-  var _friendsRef = ref.child('users').child(authData.uid).child('contacts');
-  var friendsSync = $firebaseObject(ref);
-  var friends = $firebaseArray(ref);
+// .factory('friends',function($firebaseObject, $firebaseAuth){
+//   var url = "https://glaring-torch-9527.firebaseio.com";
+//   var ref = new Firebase(url);
+//   var _friendsRef = ref.child('users').child(authData.uid).child('contacts');
+//   var friendsSync = $firebaseObject(ref);
+//   var friends = $firebaseArray(ref);
 
-  return{
-    all: function(){
-     return friends;
+//   return{
+//     all: function(){
+//      return friends;
 
-    },
-    get: function(uid){
-      var result = null;
-      friends.forEach(function(element){
-        if (uid == element.uid){
-          result = element;
-          return;
-        }
+//     },
+//     get: function(uid){
+//       var result = null;
+//       friends.forEach(function(element){
+//         if (uid == element.uid){
+//           result = element;
+//           return;
+//         }
 
-      });
-      return result;
-    },
-    add: function(friend){
-      _friendsRef.child(friend.displayName).set({
-        displayName: friend.displayName, 
-        uid: friend.uid
-      })
-    }
+//       });
+//       return result;
+//     },
+//     add: function(friend){
+//       _friendsRef.child(friend.displayName).set({
+//         displayName: friend.displayName, 
+//         uid: friend.uid
+//       })
+//     }
 
-  };
- })
+//   };
+//  })
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
 
@@ -148,9 +154,15 @@ angular.module('starter.services', [])
   var url = "https://glaring-torch-9527.firebaseio.com";
   var ref = new Firebase(url);
   var authData = $firebaseAuth(ref).$getAuth();
-  var _friendsRef = ref.child('users').child(authData.uid).child('contacts');
-  var friendsSync = $firebaseObject(ref);
-  var friends = $firebaseArray(ref);
+  var friendsRef = ref.child('users').child(authData.uid).child('contacts');
+  var friendsSync = $firebaseObject(friendsRef);
+  var friends = $firebaseArray(friendsRef);
+  friends.$loaded()
+    .then(function(x){
+      friends.forEach(function(element){
+        console.log(element);
+      })
+    })
 
   return{
     all: function(){
@@ -169,7 +181,7 @@ angular.module('starter.services', [])
       return result;
     },
     add: function(friend){
-      _friendsRef.child(friend.displayName).set({
+      friendsRef.child(friend.displayName).set({
         displayName: friend.displayName, 
         uid: friend.uid
       })
