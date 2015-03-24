@@ -13,8 +13,27 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
-.controller('FriendsCtrl', function($scope, Friends) {
+.controller('FriendsCtrl', function($scope, Friends, Directory, $ionicPopover) {
   $scope.friends = Friends.all();
+  $scope.directory = Directory.all();
+  
+
+  $ionicPopover.fromTemplateUrl('templates/add-contact.html', {scope: $scope})
+    .then(function(popover){
+      $scope.popover = popover;
+    });
+  $scope.openAddContactPopover = function($event){
+    $scope.popover.show($event);
+  };
+  $scope.closeAddContactPopover = function(){
+    scope.popover.hide();
+  };
+  $scope.$on('$destroy', function(){
+    $scope.popover.remove();
+  });
+  $scope.addContact = function(contact){
+    Friends.add(contact);
+  };
 })
 
 .controller('FriendDetailCtrl', function($scope, $stateParams, Friends) {

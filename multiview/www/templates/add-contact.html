@@ -1,0 +1,9 @@
+<ion-popover-view>
+	<ion-content>
+		<ion-list>
+			<ion-item ng-repeat="entry in directory" ng-click="addContact(entry)">
+				{{entry.displayName}}
+			</ion-item>
+		</ion-list>
+	</ion-content>
+</ion-popover-view>	
