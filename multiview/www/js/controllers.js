@@ -60,17 +60,20 @@ angular.module('starter.controllers', [])
   $scope.authObj = $firebaseAuth(ref);
   $scope.authObj.$onAuth(function(authData){
       if (authData) {
+        console.log(authData);
         console.log("logged in as:", authData.uid);
         // console.log(userData);
         // if (userData === null) {
         //   Users.add(authData);
         // }
-        Users.add(authData);
+        //Users.add(authData);
 
         var userRecord = $firebase(ref.child('users').child(authData.uid)).$asObject();
         userRecord.$loaded().then(function() {
           console.log("record: ", userRecord.$id);
-          Directory.add({'key': userRecord.displayName, 'uid': userRecord.uid})//TODO:fix hack
+          //Directory.add({'displayName': userRecord.displayName, 'uid': userRecord.uid})//TODO:fix hack
+          var directoryEntry = Directory.get(userRecord.displayName);
+          console.log(directoryEntry);
         });
         $scope.userData = userRecord;
 

@@ -164,7 +164,7 @@ angular.module('starter.services', [])
       },
       get: function(friendId) {
         // Simple index lookup
-        return friends[friendId];
+        return friendsSync[friendId];
       },
 			add: function(friend) {
 				friendsSync.$push({
@@ -196,8 +196,8 @@ angular.module('starter.services', [])
         }
         _directory.$set(entry.displayName, {
 					displayName: entry.displayName,
-					uid: entry.uid,
-					imgUrl: entry.imgUrl
+					uid: entry.uid//,
+					//imgUrl: entry.imgUrl
 				})
           .then(function(ref){ //TODO: factor this promise out
             console.log(ref.key());
