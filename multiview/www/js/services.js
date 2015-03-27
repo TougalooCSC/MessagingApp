@@ -36,7 +36,7 @@ angular.module('starter.services', [])
   };
 })
 .factory('Directory', function($firebaseObject, $firebaseArray){
- var url = "https://glaring-torch-9527.firebaseio.com";
+ var url = "https://corntoole.firebaseio.com/v2";
   var ref = new Firebase(url);
   var _directoryRef = ref.child('directory');
   var directorySync = $firebaseObject(_directoryRef);
@@ -67,7 +67,7 @@ angular.module('starter.services', [])
   };
 })
 .factory('Users', function($firebaseObject, $firebaseAuth){
-  var url = "https://glaring-torch-9527.firebaseio.com";
+  var url = "https://corntoole.firebaseio.com/v2";
   var ref = new Firebase(url);
   var usersRef = ref.child("users");
   // var authObject = $firebaseAuth(ref);
@@ -91,7 +91,7 @@ angular.module('starter.services', [])
   // var userData = 
 })
 // .factory('friends',function($firebaseObject, $firebaseAuth){
-//   var url = "https://glaring-torch-9527.firebaseio.com";
+//   var url = "https://corntoole.firebaseio.com/v2";
 //   var ref = new Firebase(url);
 //   var _friendsRef = ref.child('users').child(authData.uid).child('contacts');
 //   var friendsSync = $firebaseObject(ref);
@@ -177,7 +177,7 @@ angular.module('starter.services', [])
 .factory('Friends', function($firebaseObject, $firebaseAuth, $firebaseArray) {
   // Might use a resource here that returns a JSON array
 
-  var url = "https://glaring-torch-9527.firebaseio.com";
+  var url = "https://corntoole.firebaseio.com/v2";
   var ref = new Firebase(url);
   var authData = $firebaseAuth(ref).$getAuth();
   var friendsRef = ref.child('users').child(authData.uid).child('contacts');
