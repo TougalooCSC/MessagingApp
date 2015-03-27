@@ -6,9 +6,18 @@ angular.module('starter.controllers', [])
   $scope.chats = Chats.all();
   $scope.remove = function(chat) {
     Chats.remove(chat);
-  }
+  };
 })
+.controller('NewChatCtrl', function($scope, $stateParams, Friends, Chats){
+  $scope.participants = [];
+  $scope.friends = Friends.all();
+  $scope.searchText = "";
 
+  $scope.addParticipant = function(participant) {
+    $scope.participants.push(participant);
+    console.log('hey!')
+  };
+})
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
 })
@@ -48,13 +57,17 @@ angular.module('starter.controllers', [])
   $scope.users = Users;
   $scope.directory = Directory;
 
-  var ref = new Firebase ("https://glaring-torch-9527.firebaseio.com");
+  var ref = new Firebase ("https://corntoole.firebaseio.com/v2");
   $scope.authObj = $firebaseAuth(ref);
   $scope.authObj.$onAuth(function(authData){
       if (authData) {
         console.log("logged in as:", authData.uid);
         $scope.settings.loggedIn = true;
-        $scope.users.add(authData); //TODO; ONLY ADD IF NEW
+        var user = $scope.users.get(authData.uid);
+        console.log(user);
+        if (user.$value == null) {
+          $scope.users.add(authData); //TODO; ONLY ADD IF NEW
+        }
         var entry = $scope.directory.get(authData.uid);
         if (entry === null ){
           $scope.directory.add({
