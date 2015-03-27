@@ -1,4 +1,12 @@
 /* Empty. Add your own CSS if you like */
 .list-pill {
 	display: inline-block;
+	background-color: blue;
+	color: white;
+	border-radius: .65em;
+}
+
+#new-chat-footer {
+	bottom: 49;
+	position: absolute;
 }

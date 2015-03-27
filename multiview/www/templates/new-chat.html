@@ -1,11 +1,11 @@
 <ion-view view-title="New Chat">
 	<ion-content>
 	  <ion-list>
-	  	<ion-item ng-repeat="participant in participants" class="list-pill">
+	  	<ion-item ng-repeat="participant in participants" class="list-pill" ng-click="removeParticipant($index)">
 	  		{{participant.displayName}}
 		  </ion-item>
 		</ion-list>
-		<ion-list>
+		<ion-list class="list list-inset">
 			<ion-item>
 				<label>
 					<input type="text" ng-model="searchText">
@@ -16,5 +16,18 @@
 			  <h2>{{friend.displayName}}</h2>
 			</ion-item>
 	  </ion-list>
+
 	</ion-content>
+	<ion-footer-bar align-title="left" class="bar-positive" id="new-chat-footer">
+	  <div class="item-input-inset">
+	  	<form ng-submit="createConversation()">
+	  			<label class="item-input-wrapper">
+	  				<input type="text" ng-model="messageText">
+	  			</label>
+	  		</div>
+	  		<div class="buttons">
+	  		  <button type="submit" class="button" ng-disabled="participants.length == 0 || messageText.length == 0">Send</button>
+	  	</form>
+	  </div>
+	</ion-footer-bar>
 </ion-view>
