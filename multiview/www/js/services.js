@@ -75,14 +75,27 @@ angular.module('starter.services', [])
   // if (authData) {
   //   usersRef = $firebase(ref.child(authData.uid));
   // }
-  
+  var userAdded = function(userId, success) {
+    if (!success) {
+      console.log('user ' + userId + ' already exists!');
+    } else {
+      console.log('User added ' + userId);
+    }
+  }
   return {
     add: function(authData) {
-      usersRef.child(authData.uid).set({
-        uid: authData.uid,
-        displayName: getName(authData),
-        contacts: []
-      })
+      usersRef.child(authData.uid)
+        .transaction(function(currentUserData){
+          if (currentUserData === null) {
+            return {
+              uid: authData.uid,
+              displayName: getName(authData),
+              contacts: []
+            };
+          }
+        }, function(error, committed) {
+          userAdded(authData.uid, committed);
+        });
     },
     get: function(uid){
       return $firebaseObject(ref.child("users").child(uid));
