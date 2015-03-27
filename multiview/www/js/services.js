@@ -168,7 +168,8 @@ angular.module('starter.services', [])
     },
     add: function(newConvo) {
       conversationsRef.child(newConvo.id).set(newConvo);
-      chats.append(newConvo.id);
+      chats.push(newConvo.id);
+      // chatsRef.set(newConvo.id);
     }
   }
 })

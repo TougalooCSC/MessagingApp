@@ -8,15 +8,44 @@ angular.module('starter.controllers', [])
     Chats.remove(chat);
   };
 })
-.controller('NewChatCtrl', function($scope, $stateParams, Friends, Chats){
+.controller('NewChatCtrl', function($scope, $stateParams, Friends, Chats, Base){
   $scope.participants = [];
   $scope.friends = Friends.all();
   $scope.searchText = "";
+  $scope.messageText = "";
+  $scope.Chats = Chats;
 
   $scope.addParticipant = function(participant) {
     $scope.participants.push(participant);
-    console.log('hey!')
   };
+
+  $scope.removeParticipant = function(idx){
+    console.log(idx);
+    var deleted = $scope.participants.splice(idx, 1);
+    console.log(deleted);
+  }
+
+  $scope.createConversationMetadata = function() {
+    //collect all the participants in array
+    var ids = [];
+    for (var i=0; i < $scope.participants.length; i++){
+      ids.push($scope.participants[i].uid)
+    }
+    var myUid = Base.getAuthData().uid;
+    ids.push(myUid);
+    ids.sort();
+    var convoId = ids.join();
+    console.log(convoId);
+    return { id: convoId, idArray: ids };
+    //sort all the participantIds
+    //create string by joining ids
+  }
+  $scope.createConversation = function() {
+    var convoMetadata = $scope.createConversationMetadata();
+    $scope.Chats.add({id: convoMetadata.id, participants: convoMetadata.idArray, messages: [$scope.messageText]});
+  };
+
+
 })
 .controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
   $scope.chat = Chats.get($stateParams.chatId);
