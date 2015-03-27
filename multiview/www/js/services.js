@@ -9,6 +9,32 @@ var getName = function (authData) {
     }
 };
 angular.module('starter.services', [])
+.factory('Base', function($firebaseAuth){
+  var url = "https://corntoole.firebaseio.com/v2";
+  var ref = new Firebase(url);
+  var authObj = $firebaseAuth(ref);
+  console.log(authObj);
+  var authData = authObj.$getAuth();
+  var userRef = ref.child('users').child(authData.uid);
+  authObj.$onAuth(function(authenticationData){
+    if (authenticationData) {
+      authData = authenticationData;
+      userRef = ref.child(authData.uid);
+    }
+  });
+  return {
+    getURL: function() {
+      return url;
+    },
+    getAuthData: function() {
+      return authData;
+    },
+    getUserRef: function() {
+      return userRef;
+    }
+
+  };
+})
 .factory('Directory', function($firebaseObject, $firebaseArray){
  var url = "https://glaring-torch-9527.firebaseio.com";
   var ref = new Firebase(url);
