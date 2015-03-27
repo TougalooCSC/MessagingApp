@@ -57,6 +57,15 @@ angular.module('starter', ['ionic', 'firebase', 'starter.controllers', 'starter.
         }
       }
     })
+    .state('tab.chat-new', {
+      url: '/chats/new',
+      views: {
+        'tab-chats': {
+          templateUrl: 'templates/new-chat.html',
+          controller: 'NewChatCtrl'
+        }
+      }
+    })
     .state('tab.chat-detail', {
       url: '/chats/:chatId',
       views: {
