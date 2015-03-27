@@ -220,10 +220,23 @@ angular.module('starter.services', [])
       return result;
     },
     add: function(friend){
-      friendsRef.child(friend.displayName).set({
-        displayName: friend.displayName, 
-        uid: friend.uid
-      })
+      function onComplete(error) {
+
+        if (error) {
+          console.log('Synchronization failed');
+        } else {
+          friendsRef.child(friend.displayName).set({
+            displayName: friend.displayName, 
+            uid: friend.uid
+          });
+        }
+        friendsRef.child(friend.displayName).set({
+          displayName: friend.displayName, 
+          uid: friend.uid
+        })
+      }
+      friendsRef.set(friend.displayName, onComplete)
+      // friendsSync.$save();
     }
 
   };
